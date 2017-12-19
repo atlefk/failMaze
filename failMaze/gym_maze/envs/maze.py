@@ -9,12 +9,7 @@ import pickle as pl
 
 
 class Maze(object):
-    COMPASS = {
-        "N": (0, -1),
-        "E": (1, 0),
-        "S": (0, 1),
-        "W": (-1, 0)
-    }
+
 
     def __init__(self, width=15, height=15, complexity=1, density=1, np_rng=np.random.RandomState(),
                  rng=random.Random()):
@@ -130,7 +125,6 @@ class Maze(object):
         Z[wall[2], wall[1]] = self.toggleBit(Z[wall[2], wall[1]], wall[3]-1)
 
         superVisited = visited.copy()
-        # print("Eg ska snart begynna å jobba mann")
         while not finished:
             dirs = [0, 1, 2, 3]
             if superVisited.__len__() == 0:
@@ -144,8 +138,6 @@ class Maze(object):
                 superVisited.append((wall[1], wall[2]))
                 Z[y, x] = self.toggleBit(Z[y, x], wall[0]-1)
                 Z[wall[2], wall[1]] = self.toggleBit(Z[wall[2], wall[1]], wall[3] - 1)
-
-                # print("Eg jobbe mann")
             else:
                 # Removes that entry (No possible actions allowed from that entry)
                 superVisited.remove((x, y))
@@ -167,7 +159,6 @@ class Maze(object):
         Z[wall[2], wall[1]] -= wall[3]
 
         superVisited = visited.copy()
-        # print("Eg ska snart begynna å jobba mann")
         while not finished:
             dirs = [0, 1, 2, 3]
             if superVisited.__len__() == 0:
@@ -182,7 +173,6 @@ class Maze(object):
                 superVisited.append((wall[1], wall[2]))
                 Z[y, x] -= wall[0]
                 Z[wall[2], wall[1]] -= wall[3]
-                # print("Eg jobbe mann")
             else:
                 # Removes that entry (No possible actions allowed from that entry)
                 superVisited.remove((x, y))
@@ -205,7 +195,6 @@ class Maze(object):
             x[...] = 0x3C
             # 32+16+8+4+2+1
         Z = self.breakWalls2(Z, width, height)
-        #print(Z)
         return Z
 
     def toggleBit(self, int_type, offset):
@@ -231,7 +220,6 @@ class Maze(object):
                 x[...] = 111100
 
             Z = self.breakWalls(Z, width, height)
-            # print(Z)
             pl.dump(Z, open(str(width) + 'x' + str(height) + '.p', 'wb'))
             return Z
 
@@ -264,7 +252,9 @@ class MazeGame(object):
                  image_state_width=80,
                  image_state_height=80,
                  seed=None,
-                 seed_both=False
+                 seed_both=False,
+                 brute=False,
+                 reinforcement=False
                  ):
 
         # Pygame
@@ -287,8 +277,8 @@ class MazeGame(object):
         self.txt_down = self.font.render("D", False, (0, 0, 0))
         self.txt_left = self.font.render("L", False, (0, 0, 0))
         self.txt_right = self.font.render("R", False, (0, 0, 0))
-        self.tile_w = (screen_width + 5) / width
-        self.tile_h = (screen_height + 5) / height
+        self.tile_w = (screen_width + 4) / width
+        self.tile_h = (screen_height + 4) / height
 
         # Game Parameters
         self.width = width
@@ -309,7 +299,6 @@ class MazeGame(object):
         self.np_rng = np.random.RandomState(self.seed)
 
         # Maze Generation
-        # print("Joakim dette fungerer1")
         self.maze = None
         self.optimal_path = None
         self.optimal_path_length = None
@@ -317,14 +306,20 @@ class MazeGame(object):
         # Players
         self.player, self.target = None, None
 
+        self.background = None
+        self.maze_layer = None
+
+        self.mazeImage = None
+
         # Reset
         self.reset()
-
         # q-stuff
         self.q_table = np.zeros(shape=(self.maze.maze.shape[0], self.maze.maze.shape[1]), dtype=np.int8)
         self.q_table.fill(-1)
 
-        # self._drawMaze()
+        self.brute = brute
+        self.reinforcement = reinforcement
+
 
     @staticmethod
     def rgb2gray(rgb):
@@ -348,29 +343,20 @@ class MazeGame(object):
             return arr
 
         elif self.state_representation == "array":
-            # print(type(self.maze.maze))
-            # print(self.player)
-            state = np.array(self.maze.maze, copy=True)
-            # print(state)
-            # print(state[0][0])
-            # print(state[3][0])
 
-            #state[self.player[1], self.player[0], 0] += 1
-            #state[self.target[1], self.target[0], 0] += 10
+            state = np.array(self.maze.maze, copy=True)
+
             state[self.player[1], self.player[0], 0] = self.toggleBit(state[self.player[1], self.player[0], 0], 0)
             state[self.target[1], self.target[0], 0] = self.toggleBit(state[self.target[1], self.target[0], 0], 1)
 
-            # print(self.maze.maze)
-            # print(state)
-            # print(self.player)
-            # state = state/111010
+            state = np.array(self.mazeImage, copy=True)
+            state = state.reshape((state.shape[0], state.shape[1], 1))
 
-            # print(state)
             return state
 
     def reset(self):
+        print("1")
         # Reinitialize RNG
-
         self.rng = random.Random(self.seed if self.seed_both else None)
         self.np_rng = np.random.RandomState(self.seed)
 
@@ -378,7 +364,6 @@ class MazeGame(object):
         self.terminal = False
 
         # Create new maze
-        #print(self.width)
         self.maze = Maze(self.width, self.height, np_rng=self.np_rng, rng=self.rng)
 
         # Set player positions
@@ -394,11 +379,12 @@ class MazeGame(object):
 
         self._drawMaze2()
         # Return state
+        self.createArrayOfBoard()
+
         return self.get_state()
 
     def __draw_player(self, colour=(0, 0, 150), transparency=255):
 
-        # print(self.player)
         x = int(self.player[0] * self.tile_w + self.tile_w * 0.5 + 0.5)
         y = int(self.player[1] * self.tile_h + self.tile_h * 0.5 + 0.5)
         r = int(min(self.tile_w, self.tile_h) / 5 + 0.5)
@@ -428,10 +414,8 @@ class MazeGame(object):
     def _drawMaze2(self):
         # drawing the horizontal lines
         line_colour = (0, 0, 0, 255)
-        # print(self.maze.maze.shape)
         for y in range(len(self.maze.maze)):
             for x in range(len(self.maze.maze[y])):
-                # print(self.maze.maze[y][x])
                 value = self.maze.maze[y][x]
                 # Checks if there is a line on the leftside.
                 #6-1
@@ -460,10 +444,8 @@ class MazeGame(object):
 
         # drawing the horizontal lines
         line_colour = (0, 0, 0, 255)
-        # print(self.maze.maze.shape)
         for y in range(len(self.maze.maze)):
             for x in range(len(self.maze.maze[y])):
-                # print(self.maze.maze[y][x])
                 value = self.maze.maze[y][x]
                 # Checks if there is a line on the leftside.
                 if (value - 100000 >= 0):
@@ -517,22 +499,30 @@ class MazeGame(object):
         target_spawn = tuple(self.rng.choice(possiblePlaces))
         while True:  # todo xd
             player_spawn = tuple(self.rng.choice(possiblePlaces))
-            # print(player_spawn)
             if target_spawn != player_spawn:
                 break
         # Todo
         self.optimal_path_length, self.optimal_path = self.dfs(player_spawn, target_spawn)
-        # print(player_spawn, target_spawn)
+
         return player_spawn, target_spawn
+
+    def createArrayOfBoard(self):
+
+        self.mazeImage = self.background.copy()
+
+        self.mazeImage.blit(self.maze_layer, (0, 0))
+
+        self.mazeImage = pygame.surfarray.array2d(self.mazeImage)
+
+
 
     def render(self):
         try:
             for (x, y, z), value in np.ndenumerate(self.maze.maze):
                 pos = (x * self.tile_w, y * self.tile_h, self.tile_w + 1, self.tile_h + 1)
-                # print(pos)
+
                 txt_type = self.q_table[y, x]
-                #print(self.q_table)
-                # print(txt_type)
+
                 if txt_type == 1:
                     self.maze_layer.blit(self.txt_up, (pos[0] + 8, pos[1] + 8))  # Up
                 if txt_type == 2:
@@ -548,6 +538,10 @@ class MazeGame(object):
 
             self.screen.blit(self.background, (0, 0))
             self.screen.blit(self.maze_layer, (0, 0))
+
+            self.createArrayOfBoard()
+
+            #pygame.image.save(self.mazeImage, "screenshot.jpg")
             pygame.display.flip()
         except:
             pass
@@ -558,6 +552,7 @@ class MazeGame(object):
         }
 
     def step(self, a):
+
         if self.terminal:
             return self.on_return(1)
 
@@ -565,16 +560,34 @@ class MazeGame(object):
         posx, posy = self.player
         nextx, nexty = posx + a_vec[0], posy + a_vec[1]
 
-        # print(posx, posy)
-        if self.is_legal2(nextx, nexty):
+        trueOrNay = self.is_legal2(nextx, nexty)
+
+        if trueOrNay:
             self.__draw_player(transparency=0)
             self.player = (nextx, nexty)
+
+        if self.brute:
+            finish = False
+            if self.player == self.target:
+                    finish = True
+            return trueOrNay, finish, self.optimal_path_length
+
+        if self.reinforcement:
+            finish = False
+            if self.player == self.target:
+                reward = 1
+                finish = True
+            else:
+                reward = -0.1/(self.maze.maze.shape[0]*self.maze.maze.shape[1])
+
+            player = np.array((self.player[0], self.player[1]))
+            return player, reward, finish, self.optimal_path_length
 
         if self.player == self.target:
             self.terminal = True
             return self.on_return(1)
 
-        return self.on_return(-0.01)
+        return self.on_return(-0.1/(self.maze.maze.shape[0]*self.maze.maze.shape[1]))
 
     def quit(self):
         try:
@@ -624,6 +637,7 @@ class MazeGame(object):
             legal.remove((posx, posy - 1))
 
         return legal
+
     def is_legal2(self, nextx, nexty):
         x, y = self.player
         value = self.maze.maze[y, x, 0]
@@ -643,14 +657,12 @@ class MazeGame(object):
         # Tries to go the the right
         elif x < nextx:
             if self.testBit(value, 3) == 8:
-                # print("KAN IKKE GÅ TIL HØYRE")
                 return False
             else:
                 return True
         # Tries go to the left
         elif x > nextx:
             if self.testBit(value, 5) == 32:
-                # print("KAN IKKE GÅ TIL VENSTRE")
                 return False
             else:
                 return True
@@ -669,7 +681,6 @@ class MazeGame(object):
         # 10000
         if y < nexty:
             if valueStr[1] == "1":
-                # print("KAN IKKE GÅ NED")
                 return False
             else:
                 return True
@@ -677,7 +688,6 @@ class MazeGame(object):
         # Tries to go up
         elif y > nexty:
             if valueStr[3] == "1":
-                # print("KAN IKKE GÅ OPP")
                 return False
             else:
                 return True
@@ -685,14 +695,12 @@ class MazeGame(object):
         # Tries to go the the right
         elif x < nextx:
             if valueStr[2] == "1":
-                # print("KAN IKKE GÅ TIL HØYRE")
                 return False
             else:
                 return True
         # Tries go to the left
         elif x > nextx:
             if valueStr[0] == "1":
-                # print("KAN IKKE GÅ TIL VENSTRE")
                 return False
             else:
                 return True

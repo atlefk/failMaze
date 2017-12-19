@@ -1,24 +1,26 @@
 import gym
 import gym_maze
+from sklearn.preprocessing import minmax_scale
+import pandas
 import numpy as np
 import json
 from example.logger import logger
 from example.dqn.dqn_example_4 import DQN
 
-
-
 if __name__ == '__main__':
 
     def preprocess(state, agent):
-        new_state = np.zeros(shape=(1, ) + agent.state_size)
-        new_state[:1, :state.shape[0], :state.shape[1], :state.shape[2]] = state
+        new_state = np.reshape(state, state.shape[:2])
+        #new_state = minmax_scale(new_state)
+        #print(new_state)
+        new_state = np.reshape(new_state, (1, ) + new_state.shape + (1, ))
         return new_state
 
 
     env_list = [
-        #"maze-arr-4x4-full-deterministic-v0"
-        #maze-arr-4x4-deterministic-v0",
-        "maze-arr-6x6-full-deterministic-v0",
+        "maze-arr-4x4-full-deterministic-v0"
+        #"maze-arr-4x4-deterministic-v0",
+        #"maze-arr-6x6-full-deterministic-v0",
         #"maze-arr-7x7-full-deterministic-v0",
         #"maze-arr-11x11-stochastic-v0",
         #"maze-arr-9x9-full-deterministic-v0",
@@ -55,7 +57,7 @@ if __name__ == '__main__':
         e_min=0,
         e_max=1.0,
         e_steps=100000,
-        lr=1e-4,
+        lr=1e-6,
         discount=0.95
     )
     agent.model.summary()
@@ -146,5 +148,4 @@ if __name__ == '__main__':
 
                 if perfect_in_row >= perfects_before_next:
                     epoch = epochs
-
 

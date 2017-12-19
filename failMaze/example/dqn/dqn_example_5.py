@@ -16,60 +16,6 @@ from IPython.display import SVG
 from keras.utils.vis_utils import model_to_dot
 
 from example.dqn.capsulelayers import PrimaryCap, CapsuleLayer, Length
-"""
-class Trainer(Process):
-
-    def __init__(self):
-        super().__init__()
-
-    def train(self, model):
-        inputs = np.zeros(((self.agent.batch_size, ) + self.agent.state_size))
-        targets = np.zeros((self.agent.batch_size, self.agent.action_size))
-
-        for i, j in enumerate(np.random.choice(len(self.agent.memory), self.agent.batch_size, replace=False)):
-            state, action, reward, next_state, terminal = self.agent.memory[j]
-
-            target = reward
-
-            if not terminal:
-                target = reward + self.agent.gamma * np.amax(model.predict(next_state)[0])
-
-            targets[i] = model.predict(state)
-            targets[i, action] = target
-            inputs[i] = state
-
-            if self.agent.q_table is not None:
-
-                player_pos = np.where(state == 2)
-
-                if len(player_pos[0]) > 0:
-                    x, y = player_pos[1][0], player_pos[2][0]
-
-                    try:
-                        self.agent.q_table[x, y] = np.argmax(targets[i]) + 1
-                    except:
-                        pass
-
-        history = model.fit(inputs, targets, epochs=self.agent.train_epochs, verbose=0)
-
-        self.agent.cumulative_loss += history.history["loss"][0]
-        self.agent.train_steps += 1
-
-    def update_weights(self):
-        weights = self.model.get_weights()
-        self.agent.weight_queue.append(weights)
-
-    def run(self):
-        with tf.get_default_graph().as_default():
-            model = self.agent._build_model()
-
-        while True:
-            if len(self.agent.memory) > self.agent.batch_size:
-                self.train(model)
-
-                #if self.agent.train_steps % 10 == 0:
-                #    self.update_weights()
-"""
 
 
 class DQN:
@@ -86,7 +32,7 @@ class DQN:
                  discount=0.99
                  ):
 
-        self.q_table = np.zeros(shape=(state_size[0], state_size[1]))
+        #self.q_table = np.zeros(shape=(state_size[0], state_size[1]))
         self.state_size = state_size
         self.action_size = action_size
         self.memory = deque(maxlen=memory_size)
@@ -143,7 +89,7 @@ class DQN:
 
         n_routing = 3
         x = Input(shape=self.state_size)
-
+        """
         conv1 = Conv2D(filters=256, kernel_size=1, strides=1, padding='valid', activation='relu', name='conv1')(x)
         primarycaps = PrimaryCap(conv1, dim_vector=8, n_channels=32, kernel_size=3, strides=2, padding='valid')
         digitcaps = CapsuleLayer(num_capsule=self.action_size, dim_vector=16, num_routing=n_routing, name='digitcaps')(primarycaps)
@@ -163,7 +109,7 @@ class DQN:
         model.add(Dense(512, activation="relu"))
         model.add(Dense(self.action_size, activation="linear"))
         model.compile(optimizer=Adam(lr=self.learning_rate), loss=self._huber_loss)
-        """
+
 
         #plot_model(model, to_file='model.png', show_layer_names=True, show_shapes=True)
         #SVG(model_to_dot(model).create(prog='dot', format='svg'))
@@ -194,11 +140,12 @@ class DQN:
     def replay(self, q_table=None):
         inputs = np.zeros(((self.batch_size, ) + self.state_size))
         targets = np.zeros((self.batch_size, self.action_size))
+
         for i, j in enumerate(np.random.choice(len(self.memory), self.batch_size, replace=False)):
             state, action, reward, next_state, terminal = self.memory[j]
             #print(action)
             target = reward
-
+            print(state)
             if not terminal:
                 target = reward + self.gamma * np.amax(self.model.predict(next_state)[0])
 
@@ -208,19 +155,11 @@ class DQN:
 
             if q_table is not None:
 
-                ##Endre denne når bit kommer
-                #print(state)
-                #print(state)
-
                 for x in range(len(state[0])):
                     for y in range(len(state[0][x])):
                         value = int(state[0][x][y][0])
                         if self.testBit(value, 0) == 1:
                             player_pos = (y, x)
-                            #print("fant 1", i, j)
-                            #print(player_pos)
-                            #print(state)
-                            #print(player_pos)
                 x, y = player_pos[0], player_pos[1]
                 #print(x, y)
                 #print(state)
@@ -253,9 +192,7 @@ class DQN:
         self.epsilon = max(self.epsilon_min, self.epsilon - self.epsilon_decay)
 
     def replay_gen(self):
-        print("Not TRUE?")
         while True:
-            print("True")
             inputs = np.zeros(((self.batch_size,) + self.state_size))
             targets = np.zeros((self.batch_size, self.action_size))
 
@@ -263,18 +200,14 @@ class DQN:
                 yield inputs, targets
                 time.sleep(5)
                 continue
-            print("asdasd")
             for i, j in enumerate(np.random.choice(len(self.memory), self.batch_size, replace=False)):
                 state, action, reward, next_state, terminal = self.memory[j]
-                #print("fuckdis")
                 target = reward
 
                 if not terminal:
                     target = reward + self.gamma * np.amax(self.model.predict(next_state)[0])
 
                 targets[i] = self.model.predict(state)
-                print(i)
-                print(action)
                 targets[i, action] = target
                 #print(targets)
                 inputs[i] = state
