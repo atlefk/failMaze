@@ -23,7 +23,7 @@ class MazeClass(object):
 
         self.agent = None
 
-    '''
+
     def preprocess(self, state, agent):
         
         new_state = np.zeros(shape=(1,) + agent.state_size)
@@ -36,7 +36,7 @@ class MazeClass(object):
         #print(new_state)
         new_state = np.reshape(new_state, (1, ) + new_state.shape + (1, ))
         return new_state
-
+    '''
     def start(self, env_list):
         perfectRows = False
         while not perfectRows:

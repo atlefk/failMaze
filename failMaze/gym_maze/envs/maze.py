@@ -350,7 +350,10 @@ class MazeGame(object):
             state[self.target[1], self.target[0], 0] = self.toggleBit(state[self.target[1], self.target[0], 0], 1)
 
             state = np.array(self.mazeImage, copy=True)
+            max = state.max()
             state = state.reshape((state.shape[0], state.shape[1], 1))
+            state = state/max
+            #print(state.max.)
 
             return state
 
