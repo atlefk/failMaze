@@ -4,19 +4,17 @@ import numpy as np
 import json
 from example.logger import logger
 from example.dqn.dqn_example_5 import DQN
-from sklearn.preprocessing import minmax_scale
 
 class MazeClass(object):
     def __init__(self, render=False):
 
         self.env = None
         self.render = render
-
         self.batch_size = 64
         self.epochs = 500
         self.train_epochs = 1
         self.memory_size = 10000
-        self.timeout = 1500
+        self.timeout = 1000
         self.epsilon_increase = False
 
         self.env = None
@@ -29,20 +27,14 @@ class MazeClass(object):
         new_state = np.zeros(shape=(1,) + agent.state_size)
         new_state[:1, :state.shape[0], :state.shape[1], :state.shape[2]] = state
         return new_state
-    '''
-    def preprocess(self, state, agent):
-        new_state = np.reshape(state, state.shape[:2])
-        new_state = minmax_scale(new_state)
-        #print(new_state)
-        new_state = np.reshape(new_state, (1, ) + new_state.shape + (1, ))
-        return new_state
-    '''
+
     def start(self, env_list):
         perfectRows = False
         while not perfectRows:
             for env_name in env_list:
                 print("Creating env %s" % env_name)
                 self.env = gym.make(env_name)
+                print(self.env.observation_space)
                 self.agent = DQN(
                     self.env.observation_space,
                     self.env.action_space,
@@ -52,8 +44,8 @@ class MazeClass(object):
                     e_min=0,
                     e_max=1.0,
                     e_steps=100000,
-                    lr=0.3,
-                    discount=0.99
+                    lr=0.00001,
+                    discount=0.95
                 )
                 self.agent.model.summary()
                 try:

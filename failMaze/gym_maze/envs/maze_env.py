@@ -14,7 +14,7 @@ class MazeEnv(gym.Env):
     def __init__(self, width, height, state_type, seed=None, full_deterministic=False, brute=False,
                  reinforcement=False):
         self.env = MazeGame(
-            width, height, 64, 64, state_type, 80, 80, seed=seed, seed_both=full_deterministic, brute=brute,
+            width, height, 1024, 768, state_type, 80, 80, seed=seed, seed_both=full_deterministic, brute=brute,
             reinforcement=reinforcement
         )
         self.observation_space = self.env.get_state().shape
@@ -96,6 +96,13 @@ class MazeArr15x15Env(MazeEnv):
 
     def __init__(self):
         super(MazeArr15x15Env, self).__init__(15, 15, "array", 1337)
+
+
+class MazeImg6x6Env(MazeEnv):
+    id = "maze-img-6x6-deterministic-v0"
+
+    def __init__(self):
+        super(MazeImg6x6Env, self).__init__(6, 6, "image", 1337)
 
 
 class MazeImg15x15Env(MazeEnv):
@@ -494,7 +501,7 @@ class MazeArrFullDet6x6EnvRF(MazeEnv):
     id = "maze-arr-6x6-full-deterministic-rf-v0"
 
     def __init__(self):
-        super(MazeArrFullDet6x6EnvRF, self).__init__(6, 6, "array", 1337, full_deterministic=True, brute=False,
+        super(MazeArrFullDet6x6EnvRF, self).__init__(6, 6, "normal", 1337, full_deterministic=True, brute=False,
                                                      reinforcement=True)
 
 
@@ -502,7 +509,7 @@ class MazeArrFullDet19x19EnvRF(MazeEnv):
     id = "maze-arr-19x19-full-deterministic-rf-v0"
 
     def __init__(self):
-        super(MazeArrFullDet19x19EnvRF, self).__init__(19, 19, "array", 1337, full_deterministic=True, brute=False,
+        super(MazeArrFullDet19x19EnvRF, self).__init__(19, 19, "normal", 1337, full_deterministic=True, brute=False,
                                                        reinforcement=True)
 
 
@@ -510,5 +517,5 @@ class MazeArrFullDet55x55EnvRF(MazeEnv):
     id = "maze-arr-55x55-full-deterministic-rf-v0"
 
     def __init__(self):
-        super(MazeArrFullDet55x55EnvRF, self).__init__(55, 55, "array", 1337, full_deterministic=True, brute=False,
+        super(MazeArrFullDet55x55EnvRF, self).__init__(55, 55, "normal", 1337, full_deterministic=True, brute=False,
                                                        reinforcement=True)

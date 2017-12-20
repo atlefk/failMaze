@@ -342,23 +342,32 @@ class MazeGame(object):
             arr = np.expand_dims(arr, axis=0)
             return arr
 
-        elif self.state_representation == "array":
-
+        elif self.state_representation == "normal":
             state = np.array(self.maze.maze, copy=True)
 
             state[self.player[1], self.player[0], 0] = self.toggleBit(state[self.player[1], self.player[0], 0], 0)
             state[self.target[1], self.target[0], 0] = self.toggleBit(state[self.target[1], self.target[0], 0], 1)
 
-            state = np.array(self.mazeImage, copy=True)
-            max = state.max()
-            state = state.reshape((state.shape[0], state.shape[1], 1))
-            state = state/max
+            return state
+
+        elif self.state_representation == "array":
+
+            #state = np.array(self.maze.maze, copy=True)
+            self.createArrayOfBoard()
+            state = self.mazeImage
+
+            #state[self.player[1], self.player[0], 0] = self.toggleBit(state[self.player[1], self.player[0], 0], 0)
+            #state[self.target[1], self.target[0], 0] = self.toggleBit(state[self.target[1], self.target[0], 0], 1)
+
+            #state = np.array(self.mazeImage, copy=True)
+            #max = state.max()
+            #state = state.reshape((state.shape[0], state.shape[1], 1))
+            #state = state/max
             #print(state.max.)
 
             return state
 
     def reset(self):
-        print("1")
         # Reinitialize RNG
         self.rng = random.Random(self.seed if self.seed_both else None)
         self.np_rng = np.random.RandomState(self.seed)
@@ -381,8 +390,6 @@ class MazeGame(object):
         self.maze_layer.fill((0, 0, 0, 0,))
 
         self._drawMaze2()
-        # Return state
-        self.createArrayOfBoard()
 
         return self.get_state()
 
@@ -443,38 +450,6 @@ class MazeGame(object):
         self.screen.blit(self.maze_layer, (0, 0))
 
         pygame.display.flip()
-    def _drawMaze(self):
-
-        # drawing the horizontal lines
-        line_colour = (0, 0, 0, 255)
-        for y in range(len(self.maze.maze)):
-            for x in range(len(self.maze.maze[y])):
-                value = self.maze.maze[y][x]
-                # Checks if there is a line on the leftside.
-                if (value - 100000 >= 0):
-                    value = value - 100000
-                    pygame.draw.line(self.maze_layer, line_colour, (x * self.tile_w, y * self.tile_h),
-                                     (x * self.tile_w, y * (self.tile_h) + self.tile_h))
-                # Checks if there is a line on the bottom.
-                if (value - 10000 >= 0):
-                    value = value - 10000
-                    pygame.draw.line(self.maze_layer, line_colour, (x * self.tile_w, y * (self.tile_h) + self.tile_h),
-                                     (x * (self.tile_w) + self.tile_w, y * (self.tile_h) + self.tile_h))
-                # Checks if there is a line on the right side.
-                if (value - 1000 >= 0):
-                    value = value - 1000
-                    pygame.draw.line(self.maze_layer, line_colour, (x * self.tile_w + self.tile_w, y * self.tile_h),
-                                     (x * (self.tile_w) + self.tile_w, y * (self.tile_h) + self.tile_h))
-
-                # Checks if there is a line on the top.
-                if (value - 100 >= 0):
-                    value = value - 100
-                    pygame.draw.line(self.maze_layer, line_colour, (x * self.tile_w, y * self.tile_h),
-                                     (x * (self.tile_w) + self.tile_w, y * self.tile_h))
-
-        self.screen.blit(self.maze_layer, (0, 0))
-
-        pygame.display.flip()
 
     def dfs(self, start, goal):
         stack = [(start, [start])]
@@ -511,39 +486,37 @@ class MazeGame(object):
 
     def createArrayOfBoard(self):
 
+        self.__draw_player()
         self.mazeImage = self.background.copy()
-
         self.mazeImage.blit(self.maze_layer, (0, 0))
 
-        self.mazeImage = pygame.surfarray.array2d(self.mazeImage)
+        arr = pygame.surfarray.array3d(self.mazeImage)
+        self.image_state_size = (64, 64)
+        #print(self.image_state_size)
+        '''if random.random() < 1:
+            arr = scipy.misc.imresize(arr, self.image_state_size)
+            scipy.misc.imsave('outfile'+str(self.player)+'.jpg', arr)
 
 
+        else:
+           
+        '''
+        #arr = scipy.misc.imresize(arr, self.image_state_size)
+        arr = scipy.misc.imresize(arr, self.image_state_size)
+        arr = arr / 255
+        #arr = np.expand_dims(arr, axis=0)
+
+        self.mazeImage = arr
 
     def render(self):
         try:
-            for (x, y, z), value in np.ndenumerate(self.maze.maze):
-                pos = (x * self.tile_w, y * self.tile_h, self.tile_w + 1, self.tile_h + 1)
-
-                txt_type = self.q_table[y, x]
-
-                if txt_type == 1:
-                    self.maze_layer.blit(self.txt_up, (pos[0] + 8, pos[1] + 8))  # Up
-                if txt_type == 2:
-                    self.maze_layer.blit(self.txt_right, (pos[0] + 8, pos[1] + 8))  # Right
-                if txt_type == 3:
-                    self.maze_layer.blit(self.txt_down, (pos[0] + 8, pos[1] + 8))  # Down
-                if txt_type == 4:
-                    self.maze_layer.blit(self.txt_left, (pos[0] + 8, pos[1] + 8))  # Left
-
             self.__draw_player()
 
             self.__colour_cell(colour=(150, 0, 0), transparency=235)
 
             self.screen.blit(self.background, (0, 0))
             self.screen.blit(self.maze_layer, (0, 0))
-
             self.createArrayOfBoard()
-
             #pygame.image.save(self.mazeImage, "screenshot.jpg")
             pygame.display.flip()
         except:
@@ -555,7 +528,6 @@ class MazeGame(object):
         }
 
     def step(self, a):
-
         if self.terminal:
             return self.on_return(1)
 
@@ -566,9 +538,8 @@ class MazeGame(object):
         trueOrNay = self.is_legal2(nextx, nexty)
 
         if trueOrNay:
-            self.__draw_player(transparency=0)
+            self.__draw_player(transparency=00)
             self.player = (nextx, nexty)
-
         if self.brute:
             finish = False
             if self.player == self.target:

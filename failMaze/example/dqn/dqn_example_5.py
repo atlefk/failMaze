@@ -102,11 +102,12 @@ class DQN:
         #print(self.state_size)
         #print(self.action_size)
         model = Sequential()
-        model.add(Conv2D(256, (1, 1), strides=(1, 1), activation="relu", input_shape=self.state_size))
-        model.add(Conv2D(256, (1, 1), strides=(1, 1), activation="relu"))
-        model.add(Conv2D(256, (1, 1), strides=(1, 1), activation="relu"))
+        print(self.state_size)
+        model.add(Conv2D(32, (1, 1), strides=(1, 1), activation="relu", input_shape=self.state_size))
+        model.add(Conv2D(64, (1, 1), strides=(1, 1), activation="relu"))
+        model.add(Conv2D(128, (1, 1), strides=(1, 1), activation="relu"))
         model.add(Flatten())
-        model.add(Dense(512, activation="relu"))
+        model.add(Dense(128, activation="relu"))
         model.add(Dense(self.action_size, activation="linear"))
         model.compile(optimizer=Adam(lr=self.learning_rate), loss=self._huber_loss)
 
@@ -132,7 +133,6 @@ class DQN:
         return np.argmax(act_values[0])  # returns action
 
     def testBit(self, int_type, offset):
-        #print(int_type)
         mask = 1 << offset
 
         return (int_type & mask)
@@ -143,17 +143,14 @@ class DQN:
 
         for i, j in enumerate(np.random.choice(len(self.memory), self.batch_size, replace=False)):
             state, action, reward, next_state, terminal = self.memory[j]
-            #print(action)
             target = reward
-            print(state)
             if not terminal:
                 target = reward + self.gamma * np.amax(self.model.predict(next_state)[0])
-
             targets[i] = self.model.predict(state)
             targets[i, action] = target
             inputs[i] = state
 
-            if q_table is not None:
+            '''if q_table is not None:
 
                 for x in range(len(state[0])):
                     for y in range(len(state[0][x])):
@@ -169,7 +166,7 @@ class DQN:
                     #print(np.argmax(targets[i])+1)
                 except:
                     pass
-                '''
+
                 player_pos = np.where(self.testBit(state, 0) == 1)
                 # print(player_pos)
                 if len(player_pos[0]) > 0:
@@ -182,8 +179,6 @@ class DQN:
                     except:
                         pass
                 '''
-
-
         history = self.model.fit(inputs, targets, epochs=self.train_epochs, verbose=0)
 
         self.cumulative_loss += history.history["loss"][0]
