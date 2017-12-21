@@ -433,7 +433,7 @@ class MazeGame(object):
         self.__draw_player()
         self.screen.blit(self.maze_layer, (0, 0))
 
-        pygame.display.flip()
+        #pygame.display.flip()
 
     def dfs(self, start, goal):
         stack = [(start, [start])]
