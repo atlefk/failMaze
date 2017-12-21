@@ -13,7 +13,7 @@ class MazeClass(object):
         self.render = render
         self.batch_size = 32
         self.epochs = 500
-        self.train_epochs = 3
+        self.train_epochs = 1
         self.memory_size = 100000
         self.timeout = 1000
         self.epsilon_increase = False
