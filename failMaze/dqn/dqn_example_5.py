@@ -10,10 +10,9 @@ from keras import Input
 from keras.engine import Model
 from keras.layers import Conv2D, K, Flatten, Dense, AveragePooling2D
 from keras.models import Sequential
-from keras.optimizers import Adam
+from keras.optimizers import Adam, RMSprop
 
-
-from example.dqn.capsulelayers import PrimaryCap, CapsuleLayer, Length
+from dqn.capsulelayers import PrimaryCap, CapsuleLayer, Length
 
 
 class DQN:
@@ -101,13 +100,14 @@ class DQN:
         #print(self.state_size)
         #print(self.action_size)
         model = Sequential()
-        model.add(Conv2D(16, (8, 8), strides=(4, 4), activation="relu", input_shape=self.state_size))
-        model.add(Conv2D(32, (4, 4), strides=(2, 2), activation="relu"))
+        model.add(Conv2D(32, (8, 8), strides=(4, 4), activation="relu", input_shape=self.state_size))
+        model.add(Conv2D(64, (4, 4), strides=(2, 2), activation="relu"))
+        model.add(Conv2D(64, (3, 3), strides=(1, 1), activation="relu"))
         #model.add(Conv2D(128, (1, 1), strides=(1, 1), activation="relu"))
         model.add(Flatten())
-        model.add(Dense(256, activation="relu"))
+        model.add(Dense(512, activation="relu"))
         model.add(Dense(self.action_size, activation="linear"))
-        model.compile(optimizer=Adam(lr=self.learning_rate), loss=self._huber_loss)
+        model.compile(optimizer=Adam(lr=self.learning_rate), loss=self.huber_loss)
 
 
         #plot_model(model, to_file='model.png', show_layer_names=True, show_shapes=True)

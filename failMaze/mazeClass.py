@@ -2,8 +2,8 @@ import gym
 import gym_maze
 import numpy as np
 import json
-from example.logger import logger
-from example.dqn.dqn_example_5 import DQN
+from logger import logger
+from dqn.dqn_example_5 import DQN
 import time
 
 class MazeClass(object):
@@ -14,7 +14,7 @@ class MazeClass(object):
         self.batch_size = 32
         self.epochs = 500
         self.train_epochs = 1
-        self.memory_size = 100000
+        self.memory_size = 10000
         self.timeout = 1000
         self.epsilon_increase = False
 
