@@ -11,9 +11,7 @@ from keras.engine import Model
 from keras.layers import Conv2D, K, Flatten, Dense, AveragePooling2D
 from keras.models import Sequential
 from keras.optimizers import Adam
-from keras.utils import plot_model
-from IPython.display import SVG
-from keras.utils.vis_utils import model_to_dot
+
 
 from example.dqn.capsulelayers import PrimaryCap, CapsuleLayer, Length
 
@@ -88,8 +86,9 @@ class DQN:
     def _build_model(self):
 
         n_routing = 3
-        x = Input(shape=self.state_size)
         """
+        x = Input(shape=self.state_size)
+
         conv1 = Conv2D(filters=256, kernel_size=1, strides=1, padding='valid', activation='relu', name='conv1')(x)
         primarycaps = PrimaryCap(conv1, dim_vector=8, n_channels=32, kernel_size=3, strides=2, padding='valid')
         digitcaps = CapsuleLayer(num_capsule=self.action_size, dim_vector=16, num_routing=n_routing, name='digitcaps')(primarycaps)
@@ -102,11 +101,11 @@ class DQN:
         #print(self.state_size)
         #print(self.action_size)
         model = Sequential()
-        model.add(Conv2D(32, (1, 1), strides=(1, 1), activation="relu", input_shape=self.state_size))
-        model.add(Conv2D(64, (1, 1), strides=(1, 1), activation="relu"))
-        model.add(Conv2D(128, (1, 1), strides=(1, 1), activation="relu"))
+        model.add(Conv2D(16, (8, 8), strides=(4, 4), activation="relu", input_shape=self.state_size))
+        model.add(Conv2D(32, (4, 4), strides=(2, 2), activation="relu"))
+        #model.add(Conv2D(128, (1, 1), strides=(1, 1), activation="relu"))
         model.add(Flatten())
-        model.add(Dense(128, activation="relu"))
+        model.add(Dense(256, activation="relu"))
         model.add(Dense(self.action_size, activation="linear"))
         model.compile(optimizer=Adam(lr=self.learning_rate), loss=self._huber_loss)
 

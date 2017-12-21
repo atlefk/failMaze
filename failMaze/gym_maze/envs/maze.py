@@ -309,6 +309,7 @@ class MazeGame(object):
 
         self.mazeImage = None
 
+        self.previous = np.zeros(shape=(4, 128, 128))
         # Reset
         self.reset()
         # q-stuff
@@ -318,6 +319,9 @@ class MazeGame(object):
         self.brute = brute
 
         self.reinforcement = reinforcement
+
+
+
 
     @staticmethod
     def rgb2gray(rgb):
@@ -334,9 +338,11 @@ class MazeGame(object):
             return state
 
         elif self.state_representation == "normal":
-
-            state = np.array(self.maze.maze, copy=True)
             self.createArrayOfBoard()
+            state = np.array(self.mazeImage, copy=True)
+            state = state.reshape(state.shape[1], state.shape[2], state.shape[0])
+
+
 
             return state
 
@@ -361,6 +367,9 @@ class MazeGame(object):
         # Create a layer for the maze
         self.maze_layer = pygame.Surface(self.screen.get_size()).convert_alpha()
         self.maze_layer.fill((0, 0, 0, 0,))
+
+        self.previous = np.zeros(shape=(4, 128, 128))
+        #print(self.previous)
 
         self._drawMaze()
 
@@ -451,14 +460,8 @@ class MazeGame(object):
 
         target_spawn = tuple(self.rng.choice(possiblePlaces))
         target_spawn = (target_spawn[0], target_spawn[1])
-        #print(target_spawn)
         while True:  # todo xd
             player_spawn = tuple(self.rng.choice(possiblePlaces))
-            #player_spawn = (player_spawn[0], player_spawn[1])
-            #player_spawn = (target_spawn[0]-1, player_spawn[1]+2)
-            #old = player_spawn
-            #player_spawn = target_spawn
-            #target_spawn = (old[0], old[1]-1)
             if target_spawn != player_spawn:
                 break
         # Todo
@@ -479,11 +482,13 @@ class MazeGame(object):
         else:
             arr = scipy.misc.imresize(arr, self.image_state_size)
         """
-
         arr = scipy.misc.imresize(arr, self.image_state_size)
+        arr = self.rgb2gray(arr)
         arr = arr / 255
+        self.previous = np.roll(self.previous, 1, axis=0)
+        self.previous[0] = arr
 
-        self.mazeImage = arr
+        self.mazeImage = self.previous
 
     def render(self):
         try:

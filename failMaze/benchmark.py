@@ -1,11 +1,11 @@
 #from bruteForce import bfClass
-from reinforcement import ReinforcementClass
-#from mazeClass import MazeClass
+#from reinforcement import ReinforcementClass
+from mazeClass import MazeClass
 
 if __name__ == "__main__":
     #brute = bfClass(render=True)
-    reinforcement = ReinforcementClass(render=True)
-    #project = MazeClass(render=True)
+    #reinforcement = ReinforcementClass(render=True)
+    project = MazeClass(render=True)
 
     env_listBrute = [
         "maze-arr-4x4-full-deterministic-b0-v0",
@@ -29,9 +29,9 @@ if __name__ == "__main__":
     ]
 
     env_list = [
-        "maze-arr-4x4-full-deterministic-v0"
+        "maze-normal-4x4-full-deterministic-v0"
         # maze-arr-4x4-deterministic-v0",
-        #"dmaze-arr-6x6-full-deterministic-v0",
+        #"maze-normal-6x6-full-deterministic-v0",
         # "maze-arr-7x7-full-deterministic-v0",
         # "maze-arr-11x11-stochastic-v0",
         # "maze-arr-9x9-full-deterministic-v0",
@@ -48,6 +48,6 @@ if __name__ == "__main__":
 
     #results = brute.start(env_list=env_listBrute, nTimes=10)
     #print(results)
-    results = reinforcement.start(env_list=env_listReinforcement, nTimes=10)
-    print(results)
-    #project.start(env_list)
+    #results = reinforcement.start(env_list=env_listReinforcement, nTimes=10)
+    #print(results)
+    project.start(env_list)

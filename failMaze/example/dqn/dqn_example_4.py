@@ -141,7 +141,7 @@ class DQN:
         return K.mean(K.sqrt(1 + K.square(error)) - 1, axis=-1)
 
     def _build_model(self):
-
+        """
         n_routing = 3
         x = Input(shape=self.state_size)
 
@@ -156,16 +156,16 @@ class DQN:
 
         """
         #print(self.state_size)
-        #print(self.action_size)
+        #print(self.action_size)and
         model = Sequential()
         model.add(Conv2D(256, (1, 1), strides=(1, 1), activation="relu", input_shape=self.state_size))
         model.add(Conv2D(256, (1, 1), strides=(1, 1), activation="relu"))
         model.add(Conv2D(256, (1, 1), strides=(1, 1), activation="relu"))
         model.add(Flatten())
-        model.add(Dense(512, activation="relu"))
+        model.add(Dense(64, activation="relu"))
         model.add(Dense(self.action_size, activation="linear"))
         model.compile(optimizer=Adam(lr=self.learning_rate), loss=self._huber_loss)
-        """
+
 
         # plot_model(model, to_file='model.png', show_layer_names=True, show_shapes=True)
         # SVG(model_to_dot(model).create(prog='dot', format='svg'))
@@ -207,7 +207,7 @@ class DQN:
             targets[i] = self.model.predict(state)
             targets[i, action] = target
             inputs[i] = state
-
+            '''
             if q_table is not None:
 
                 ##Endre denne når bit kommer
@@ -232,7 +232,7 @@ class DQN:
                     # print(np.argmax(targets[i])+1)
                 except:
                     pass
-                '''
+                    
                 player_pos = np.where(self.testBit(state, 0) == 1)
                 # print(player_pos)
                 if len(player_pos[0]) > 0:
@@ -245,8 +245,8 @@ class DQN:
                     except:
                         pass
                 '''
-        print(inputs)
-        print(targets)
+        #print(inputs)
+        #print(targets)
         history = self.model.fit(inputs, targets, epochs=self.train_epochs, verbose=0)
 
         self.cumulative_loss += history.history["loss"][0]
@@ -255,9 +255,7 @@ class DQN:
         self.epsilon = max(self.epsilon_min, self.epsilon - self.epsilon_decay)
 
     def replay_gen(self):
-        print("Not TRUE?")
         while True:
-            print("True")
             inputs = np.zeros(((self.batch_size,) + self.state_size))
             targets = np.zeros((self.batch_size, self.action_size))
 
@@ -265,7 +263,6 @@ class DQN:
                 yield inputs, targets
                 time.sleep(5)
                 continue
-            print("asdasd")
             for i, j in enumerate(np.random.choice(len(self.memory), self.batch_size, replace=False)):
                 state, action, reward, next_state, terminal = self.memory[j]
                 # print("fuckdis")

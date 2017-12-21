@@ -3,17 +3,18 @@ import gym_maze
 import numpy as np
 import json
 from example.logger import logger
-from example.dqn.dqn_example_4 import DQN
+from example.dqn.dqn_example_5 import DQN
+import time
 
 class MazeClass(object):
     def __init__(self, render=False):
 
         self.env = None
         self.render = render
-        self.batch_size = 64
+        self.batch_size = 32
         self.epochs = 500
-        self.train_epochs = 1
-        self.memory_size = 10000
+        self.train_epochs = 3
+        self.memory_size = 100000
         self.timeout = 1000
         self.epsilon_increase = False
 
@@ -24,6 +25,7 @@ class MazeClass(object):
     def preprocess(self, state, agent):
         
         new_state = np.zeros(shape=(1,) + agent.state_size)
+        #print(agent.state_size)
         new_state[:1, :state.shape[0], :state.shape[1], :state.shape[2]] = state
         return new_state
 
@@ -31,6 +33,7 @@ class MazeClass(object):
         perfectRows = False
         while not perfectRows:
             for env_name in env_list:
+                results = dict()
                 print("Creating env %s" % env_name)
                 self.env = gym.make(env_name)
                 self.agent = DQN(
@@ -41,9 +44,9 @@ class MazeClass(object):
                     train_epochs=self.train_epochs,
                     e_min=0,
                     e_max=1.0,
-                    e_steps=10000,
-                    lr=0.00001,
-                    discount=0.99
+                    e_steps=100000,
+                    lr=0.000001,
+                    discount=0.95
                 )
                 self.agent.model.summary()
                 try:
@@ -60,7 +63,9 @@ class MazeClass(object):
                 self.agent.save("./model_weights.h5")
 
                 epoch = 0
+                startTime = time.time()
                 while epoch < self.epochs:
+
                     epoch += 1
 
                     # Reset environment
@@ -82,7 +87,6 @@ class MazeClass(object):
                         # Perform action in environment
                         next_state, reward, terminal, info = self.env.step(action)
                         next_state = self.preprocess(next_state, self.agent)
-
                         # Experience replay
                         self.agent.remember(state, action, reward, next_state, terminal)
 
@@ -95,6 +99,10 @@ class MazeClass(object):
                             # If it a prefect round, set to test phase
                             if timestep == info["optimal_path"]:
                                 phase = "exploit"
+                                results[perfect_in_row.__str__()] = time.time()-startTime
+                                print(results['0'])
+                                if perfect_in_row==9:
+                                    print(results)
                                 perfect_in_row += 1
                             else:
                                 phase = "explore"
