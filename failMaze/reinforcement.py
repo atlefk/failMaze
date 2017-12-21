@@ -2,13 +2,13 @@ import sys
 import numpy as np
 import math
 import random
+import time
 
 import gym
 import gym_maze
 
 
 class ReinforcementClass(object):
-
     def __init__(self, render=False):
         self.render = render
 
@@ -45,15 +45,16 @@ class ReinforcementClass(object):
 
         self.env = None
 
-    def simulate(self):
-
+    def simulate(self, nTimes):
+        start_time = time.time()
+        results = dict()
         # Instantiating the learning related parameters
         learning_rate = self.get_learning_rate(0)
         explore_rate = self.get_explore_rate(0)
         discount_factor = 0.99
-
+        self.STREAK_TO_END = nTimes-1
         num_streaks = 0
-
+        firstSolution = 0
         if self.render:
             self.env.render()
 
@@ -73,20 +74,15 @@ class ReinforcementClass(object):
 
                 # execute the action
                 obv, reward, done, _ = self.env.step(action)
-                # asd = np.array((1, 1))
-                # print(obv)
                 # Observe the result
                 state = self.state_to_bucket(obv)
                 total_reward += reward
 
                 # Update the Q based on the result
                 best_q = np.amax(self.q_table[state])
-                # print(state_0)
-                # print(action)
-                # print(best_q)
-                # print(reward)
+
                 self.q_table[state_0 + (action,)] += learning_rate * (
-                reward + discount_factor * (best_q) - self.q_table[state_0 + (action,)])
+                    reward + discount_factor * (best_q) - self.q_table[state_0 + (action,)])
 
                 # Setting up for the next iteration
                 state_0 = state
@@ -126,6 +122,7 @@ class ReinforcementClass(object):
                           % (episode, t, total_reward, num_streaks))
 
                     if t <= self.SOLVED_T:
+                        results[num_streaks.__str__()] = float(time.time() - start_time)
                         num_streaks += 1
                         self.env.reset()
                     else:
@@ -136,9 +133,8 @@ class ReinforcementClass(object):
                     print("Episode %d timed out at %d with total reward = %f."
                           % (episode, t, total_reward))
 
-            # It's considered done when it's solved over 120 times consecutively
             if num_streaks > self.STREAK_TO_END:
-                break
+                return results
 
             # Update parameters
             explore_rate = self.get_explore_rate(episode)
@@ -162,6 +158,7 @@ class ReinforcementClass(object):
 
     def state_to_bucket(self, state):
         bucket_indice = []
+        # print(state)
         for i in range(len(state)):
             if state[i] <= self.STATE_BOUNDS[i][0]:
                 bucket_index = 0
@@ -176,7 +173,8 @@ class ReinforcementClass(object):
             bucket_indice.append(bucket_index)
         return tuple(bucket_indice)
 
-    def start(self, env_list):
+    def start(self, env_list, nTimes):
+        dictWithResults = dict()
         for maze in env_list:
             self.env = gym.make(maze)
             self.MAZE_SIZE = (self.env.observation_space[0], self.env.observation_space[1])
@@ -184,6 +182,7 @@ class ReinforcementClass(object):
             self.NUM_BUCKETS = self.MAZE_SIZE  # one bucket per grid
 
             # Bounds for each discrete state
+            # print(self.env.observation_space)
             self.STATE_BOUNDS = [(0, self.env.observation_space[0] - 1), (0, self.env.observation_space[1] - 1)]
             # print(STATE_BOUNDS)
             '''
@@ -205,12 +204,7 @@ class ReinforcementClass(object):
             Creating a Q-Table for each state-action pair
             '''
             self.q_table = np.zeros(self.NUM_BUCKETS + (self.NUM_ACTIONS.__len__(),), dtype=float)
-            '''
-            Begin simulation
-            '''
-            #   recording_folder = "/tmp/maze_q_learning"
 
-            #  if ENABLE_RECORDING:
-            #     env.monitor.start(recording_folder, force=True)
-
-            self.simulate()
+            results = self.simulate(nTimes)
+            dictWithResults[maze] = results
+        return dictWithResults

@@ -35,158 +35,81 @@ class MazeEnv(gym.Env):
         return self.env.render()
 
 
-class MazeArr4x4Env(MazeEnv):
-    id = "maze-arr-4x4-deterministic-v0"
+'''
+
+Full determinstic with the picture pixels as input for the neural network.
+
+'''
+
+
+class MazeNormalFullDet4x4Env(MazeEnv):
+    id = "maze-normal-4x4-full-deterministic-v0"
 
     def __init__(self):
-        super(MazeArr4x4Env, self).__init__(4, 4, "array", 1337)
+        super(MazeNormalFullDet4x4Env, self).__init__(4, 4, "normal", 1337, full_deterministic=True)
 
 
-class MazeArr9x9Env(MazeEnv):
-    id = "maze-arr-9x9-deterministic-v0"
-
-    def __init__(self):
-        super(MazeArr9x9Env, self).__init__(9, 9, "array", 1337)
-
-
-class MazeArr12x12Env(MazeEnv):
-    id = "maze-arr-12x12-full-deterministic-v0"
+class MazeNormalFullDet6x6Env(MazeEnv):
+    id = "maze-normal-6x6-full-deterministic-v0"
 
     def __init__(self):
-        super(MazeArr12x12Env, self).__init__(12, 12, "array", 1337)
+        super(MazeNormalFullDet6x6Env, self).__init__(6, 6, "normal", 1337, full_deterministic=True)
 
 
-class MazeImg9x9Env(MazeEnv):
-    id = "maze-img-9x9-deterministic-v0"
-
-    def __init__(self):
-        super(MazeImg9x9Env, self).__init__(9, 9, "image", 1337)
-
-
-class MazeArr11x11Env(MazeEnv):
-    id = "maze-arr-11x11-deterministic-v0"
+class MazeNormalFullDet7x7Env(MazeEnv):
+    id = "maze-normal-7x7-full-deterministic-v0"
 
     def __init__(self):
-        super(MazeArr11x11Env, self).__init__(11, 11, "array", 1337)
+        super(MazeNormalFullDet7x7Env, self).__init__(7, 7, "normal", 1337, full_deterministic=True)
 
 
-class MazeImg11x11Env(MazeEnv):
-    id = "maze-img-11x11-deterministic-v0"
-
-    def __init__(self):
-        super(MazeImg11x11Env, self).__init__(11, 11, "image", 1337)
-
-
-class MazeArr13x13Env(MazeEnv):
-    id = "maze-arr-13x13-deterministic-v0"
+class MazeNormalFullDet9x9Env(MazeEnv):
+    id = "maze-normal-9x9-full-deterministic-v0"
 
     def __init__(self):
-        super(MazeArr13x13Env, self).__init__(13, 13, "array", 1337)
+        super(MazeNormalFullDet9x9Env, self).__init__(9, 9, "normal", 1337, full_deterministic=True)
 
 
-class MazeImg13x13Env(MazeEnv):
-    id = "maze-img-13x13-deterministic-v0"
-
-    def __init__(self):
-        super(MazeImg13x13Env, self).__init__(13, 13, "image", 1337)
-
-
-class MazeArr15x15Env(MazeEnv):
-    id = "maze-arr-15x15-deterministic-v0"
+class MazeNormalFullDet11x11Env(MazeEnv):
+    id = "maze-normal-11x11-full-deterministic-v0"
 
     def __init__(self):
-        super(MazeArr15x15Env, self).__init__(15, 15, "array", 1337)
+        super(MazeNormalFullDet11x11Env, self).__init__(11, 11, "normal", 1337, full_deterministic=True)
 
 
-class MazeImg6x6Env(MazeEnv):
-    id = "maze-img-6x6-deterministic-v0"
-
-    def __init__(self):
-        super(MazeImg6x6Env, self).__init__(6, 6, "image", 1337)
-
-
-class MazeImg15x15Env(MazeEnv):
-    id = "maze-img-15x15-deterministic-v0"
+class MazeNormalFullDet19x19Env(MazeEnv):
+    id = "maze-normal-19x19-full-deterministic-v0"
 
     def __init__(self):
-        super(MazeImg15x15Env, self).__init__(15, 15, "image", 1337)
+        super(MazeNormalFullDet19x19Env, self).__init__(19, 19, "normal", 1337, full_deterministic=True)
 
 
-class MazeArr17x17Env(MazeEnv):
-    id = "maze-arr-17x17-deterministic-v0"
-
-    def __init__(self):
-        super(MazeArr17x17Env, self).__init__(17, 17, "array", 1337)
-
-
-class MazeImg17x17Env(MazeEnv):
-    id = "maze-img-17x17-deterministic-v0"
+class MazeNormalFullDet25x25Env(MazeEnv):
+    id = "maze-normal-25x25-full-deterministic-v0"
 
     def __init__(self):
-        super(MazeImg17x17Env, self).__init__(17, 17, "image", 1337)
+        super(MazeNormalFullDet25x25Env, self).__init__(25, 25, "normal", 1337, full_deterministic=True)
 
 
-class MazeArr4x4Env(MazeEnv):
-    id = "maze-arr-4x4-deterministic-v0"
-
-    def __init__(self):
-        super(MazeArr4x4Env, self).__init__(4, 4, "array", 1337)
-
-
-class MazeArr19x19Env(MazeEnv):
-    id = "maze-arr-19x19-deterministic-v0"
+class MazeNormalFullDet35x35Env(MazeEnv):
+    id = "maze-normal-35x35-full-deterministic-v0"
 
     def __init__(self):
-        super(MazeArr19x19Env, self).__init__(19, 19, "array", 1337)
+        super(MazeNormalFullDet35x35Env, self).__init__(35, 35, "normal", 1337, full_deterministic=True)
 
 
-class MazeImg19x19Env(MazeEnv):
-    id = "maze-img-19x19-deterministic-v0"
-
-    def __init__(self):
-        super(MazeImg19x19Env, self).__init__(19, 19, "image", 1337)
-
-
-class MazeArr25x25Env(MazeEnv):
-    id = "maze-arr-25x25-deterministic-v0"
+class MazeNormalFullDet55x55Env(MazeEnv):
+    id = "maze-normal-55x55-full-deterministic-v0"
 
     def __init__(self):
-        super(MazeArr25x25Env, self).__init__(25, 25, "array", 1337)
+        super(MazeNormalFullDet55x55Env, self).__init__(55, 55, "normal", 1337, full_deterministic=True)
 
 
-class MazeImg25x25Env(MazeEnv):
-    id = "maze-img-25x25-deterministic-v0"
+'''
 
-    def __init__(self):
-        super(MazeImg25x25Env, self).__init__(25, 25, "image", 1337)
+Full deterministic, using the puzzle board as input for the neural network. 
 
-
-class MazeArr35x35Env(MazeEnv):
-    id = "maze-arr-35x35-deterministic-v0"
-
-    def __init__(self):
-        super(MazeArr35x35Env, self).__init__(35, 35, "array", 1337)
-
-
-class MazeImg35x35Env(MazeEnv):
-    id = "maze-img-35x35-deterministic-v0"
-
-    def __init__(self):
-        super(MazeImg35x35Env, self).__init__(35, 35, "image", 1337)
-
-
-class MazeArr55x55Env(MazeEnv):
-    id = "maze-arr-55x55-deterministic-v0"
-
-    def __init__(self):
-        super(MazeArr55x55Env, self).__init__(55, 55, "array", 1337)
-
-
-class MazeImg55x55Env(MazeEnv):
-    id = "maze-img-55x55-deterministic-v0"
-
-    def __init__(self):
-        super(MazeImg55x55Env, self).__init__(55, 55, "image", 1337)
+'''
 
 
 class MazeArrFullDet4x4Env(MazeEnv):
@@ -217,25 +140,11 @@ class MazeArrFullDet9x9Env(MazeEnv):
         super(MazeArrFullDet9x9Env, self).__init__(9, 9, "array", 1337, full_deterministic=True)
 
 
-class MazeImgFullDet9x9Env(MazeEnv):
-    id = "maze-img-9x9-full-deterministic-v0"
-
-    def __init__(self):
-        super(MazeImgFullDet9x9Env, self).__init__(9, 9, "image", 1337, full_deterministic=True)
-
-
 class MazeArrFullDet11x11Env(MazeEnv):
     id = "maze-arr-11x11-full-deterministic-v0"
 
     def __init__(self):
         super(MazeArrFullDet11x11Env, self).__init__(11, 11, "array", 1337, full_deterministic=True)
-
-
-class MazeImgFullDet11x11Env(MazeEnv):
-    id = "maze-img-11x11-full-deterministic-v0"
-
-    def __init__(self):
-        super(MazeImgFullDet11x11Env, self).__init__(11, 11, "image", 1337, full_deterministic=True)
 
 
 class MazeArrFullDet13x13Env(MazeEnv):
@@ -245,25 +154,11 @@ class MazeArrFullDet13x13Env(MazeEnv):
         super(MazeArrFullDet13x13Env, self).__init__(13, 13, "array", 1337, full_deterministic=True)
 
 
-class MazeImgFullDet13x13Env(MazeEnv):
-    id = "maze-img-13x13-full-deterministic-v0"
-
-    def __init__(self):
-        super(MazeImgFullDet13x13Env, self).__init__(13, 13, "image", 1337, full_deterministic=True)
-
-
 class MazeArrFullDet15x15Env(MazeEnv):
     id = "maze-arr-15x15-full-deterministic-v0"
 
     def __init__(self):
         super(MazeArrFullDet15x15Env, self).__init__(15, 15, "array", 1337, full_deterministic=True)
-
-
-class MazeImgFullDet15x15Env(MazeEnv):
-    id = "maze-img-15x15-full-deterministic-v0"
-
-    def __init__(self):
-        super(MazeImgFullDet15x15Env, self).__init__(15, 15, "image", 1337, full_deterministic=True)
 
 
 class MazeArrFullDet17x17Env(MazeEnv):
@@ -273,25 +168,11 @@ class MazeArrFullDet17x17Env(MazeEnv):
         super(MazeArrFullDet17x17Env, self).__init__(17, 17, "array", 1337, full_deterministic=True)
 
 
-class MazeImgFullDet17x17Env(MazeEnv):
-    id = "maze-img-17x17-full-deterministic-v0"
-
-    def __init__(self):
-        super(MazeImgFullDet17x17Env, self).__init__(17, 17, "image", 1337, full_deterministic=True)
-
-
 class MazeArrFullDet19x19Env(MazeEnv):
     id = "maze-arr-19x19-full-deterministic-v0"
 
     def __init__(self):
         super(MazeArrFullDet19x19Env, self).__init__(19, 19, "array", 1337, full_deterministic=True)
-
-
-class MazeImgFullDet19x19Env(MazeEnv):
-    id = "maze-img-19x19-full-deterministic-v0"
-
-    def __init__(self):
-        super(MazeImgFullDet19x19Env, self).__init__(19, 19, "image", 1337, full_deterministic=True)
 
 
 class MazeArrFullDet25x25Env(MazeEnv):
@@ -301,25 +182,11 @@ class MazeArrFullDet25x25Env(MazeEnv):
         super(MazeArrFullDet25x25Env, self).__init__(25, 25, "array", 1337, full_deterministic=True)
 
 
-class MazeImgFullDet25x25Env(MazeEnv):
-    id = "maze-img-25x25-full-deterministic-v0"
-
-    def __init__(self):
-        super(MazeImgFullDet25x25Env, self).__init__(25, 25, "image", 1337, full_deterministic=True)
-
-
 class MazeArrFullDet35x35Env(MazeEnv):
     id = "maze-arr-35x35-full-deterministic-v0"
 
     def __init__(self):
         super(MazeArrFullDet35x35Env, self).__init__(35, 35, "array", 1337, full_deterministic=True)
-
-
-class MazeImgFullDet35x35Env(MazeEnv):
-    id = "maze-img-35x35-full-deterministic-v0"
-
-    def __init__(self):
-        super(MazeImgFullDet35x35Env, self).__init__(35, 35, "image", 1337, full_deterministic=True)
 
 
 class MazeArrFullDet55x55Env(MazeEnv):
@@ -329,11 +196,11 @@ class MazeArrFullDet55x55Env(MazeEnv):
         super(MazeArrFullDet55x55Env, self).__init__(55, 55, "array", 1337, full_deterministic=True)
 
 
-class MazeImgFullDet55x55Env(MazeEnv):
-    id = "maze-img-55x55-full-deterministic-v0"
+'''
 
-    def __init__(self):
-        super(MazeImgFullDet55x55Env, self).__init__(55, 55, "image", 1337, full_deterministic=True)
+Stochastic
+
+'''
 
 
 class MazeArrRnd9x9Env(MazeEnv):
@@ -343,130 +210,18 @@ class MazeArrRnd9x9Env(MazeEnv):
         super(MazeArrRnd9x9Env, self).__init__(9, 9, "array", None)
 
 
-class MazeImgRnd9x9Env(MazeEnv):
-    id = "maze-img-9x9-stochastic-v0"
-
-    def __init__(self):
-        super(MazeImgRnd9x9Env, self).__init__(9, 9, "image", None)
-
-
-class MazeArrRnd11x11Env(MazeEnv):
-    id = "maze-arr-11x11-stochastic-v0"
-
-    def __init__(self):
-        super(MazeArrRnd11x11Env, self).__init__(11, 11, "array", None)
-
-
-class MazeImgRnd11x11Env(MazeEnv):
-    id = "maze-img-11x11-stochastic-v0"
-
-    def __init__(self):
-        super(MazeImgRnd11x11Env, self).__init__(11, 11, "image", None)
-
-
-class MazeArrRnd13x13Env(MazeEnv):
-    id = "maze-arr-13x13-stochastic-v0"
-
-    def __init__(self):
-        super(MazeArrRnd13x13Env, self).__init__(13, 13, "array", None)
-
-
-class MazeImgRnd13x13Env(MazeEnv):
-    id = "maze-img-13x13-stochastic-v0"
-
-    def __init__(self):
-        super(MazeImgRnd13x13Env, self).__init__(13, 13, "image", None)
-
-
-class MazeArrRnd15x15Env(MazeEnv):
-    id = "maze-arr-15x15-stochastic-v0"
-
-    def __init__(self):
-        super(MazeArrRnd15x15Env, self).__init__(15, 15, "array", None)
-
-
-class MazeImgRnd15x15Env(MazeEnv):
-    id = "maze-img-15x15-stochastic-v0"
-
-    def __init__(self):
-        super(MazeImgRnd15x15Env, self).__init__(15, 15, "image", None)
-
-
-class MazeArrRnd17x17Env(MazeEnv):
-    id = "maze-arr-17x17-stochastic-v0"
-
-    def __init__(self):
-        super(MazeArrRnd17x17Env, self).__init__(17, 17, "array", None)
-
-
-class MazeImgRnd17x17Env(MazeEnv):
-    id = "maze-img-17x17-stochastic-v0"
-
-    def __init__(self):
-        super(MazeImgRnd17x17Env, self).__init__(17, 17, "image", None)
-
-
-class MazeArrRnd19x19Env(MazeEnv):
-    id = "maze-arr-19x19-stochastic-v0"
-
-    def __init__(self):
-        super(MazeArrRnd19x19Env, self).__init__(19, 19, "array", None)
-
-
-class MazeImgRnd19x19Env(MazeEnv):
-    id = "maze-img-19x19-stochastic-v0"
-
-    def __init__(self):
-        super(MazeImgRnd19x19Env, self).__init__(19, 19, "image", None)
-
-
-class MazeArrRnd25x25Env(MazeEnv):
-    id = "maze-arr-25x25-stochastic-v0"
-
-    def __init__(self):
-        super(MazeArrRnd25x25Env, self).__init__(25, 25, "array", None)
-
-
-class MazeImgRnd25x25Env(MazeEnv):
-    id = "maze-img-25x25-stochastic-v0"
-
-    def __init__(self):
-        super(MazeImgRnd25x25Env, self).__init__(25, 25, "image", None)
-
-
-class MazeArrRnd35x35Env(MazeEnv):
-    id = "maze-arr-35x35-stochastic-v0"
-
-    def __init__(self):
-        super(MazeArrRnd35x35Env, self).__init__(35, 35, "array", None)
-
-
-class MazeImgRnd35x35Env(MazeEnv):
-    id = "maze-img-35x35-stochastic-v0"
-
-    def __init__(self):
-        super(MazeImgRnd35x35Env, self).__init__(35, 35, "image", None)
-
-
-class MazeArrRnd55x55Env(MazeEnv):
-    id = "maze-arr-55x55-stochastic-v0"
-
-    def __init__(self):
-        super(MazeArrRnd55x55Env, self).__init__(55, 55, "array", None)
-
-
-class MazeImgRnd55x55Env(MazeEnv):
-    id = "maze-img-55x55-stochastic-v0"
-
-    def __init__(self):
-        super(MazeImgRnd55x55Env, self).__init__(55, 55, "image", None)
-
-
 '''
 
 Brute mazes.
 
 '''
+
+
+class MazeArrFullDet4x4EnvBrute(MazeEnv):
+    id = "maze-arr-4x4-full-deterministic-b0-v0"
+
+    def __init__(self):
+        super(MazeArrFullDet4x4EnvBrute, self).__init__(4, 4, "array", 1337, full_deterministic=True, brute=True)
 
 
 class MazeArrFullDet6x6EnvBrute(MazeEnv):
@@ -476,11 +231,32 @@ class MazeArrFullDet6x6EnvBrute(MazeEnv):
         super(MazeArrFullDet6x6EnvBrute, self).__init__(6, 6, "array", 1337, full_deterministic=True, brute=True)
 
 
+class MazeArrFullDet9x9EnvBrute(MazeEnv):
+    id = "maze-arr-9x9-full-deterministic-b0-v0"
+
+    def __init__(self):
+        super(MazeArrFullDet9x9EnvBrute, self).__init__(9, 9, "array", 1337, full_deterministic=True, brute=True)
+
+
 class MazeArrFullDet19x19EnvBrute(MazeEnv):
     id = "maze-arr-19x19-full-deterministic-b0-v0"
 
     def __init__(self):
         super(MazeArrFullDet19x19EnvBrute, self).__init__(19, 19, "array", 1337, full_deterministic=True, brute=True)
+
+
+class MazeArrFullDet25x25EnvBrute(MazeEnv):
+    id = "maze-arr-25x25-full-deterministic-b0-v0"
+
+    def __init__(self):
+        super(MazeArrFullDet25x25EnvBrute, self).__init__(25, 25, "array", 1337, full_deterministic=True, brute=True)
+
+
+class MazeArrFullDet35x35EnvBrute(MazeEnv):
+    id = "maze-arr-35x35-full-deterministic-b0-v0"
+
+    def __init__(self):
+        super(MazeArrFullDet35x35EnvBrute, self).__init__(35, 35, "array", 1337, full_deterministic=True, brute=True)
 
 
 class MazeArrFullDet55x55EnvBrute(MazeEnv):
@@ -490,6 +266,13 @@ class MazeArrFullDet55x55EnvBrute(MazeEnv):
         super(MazeArrFullDet55x55EnvBrute, self).__init__(55, 55, "array", 1337, full_deterministic=True, brute=True)
 
 
+class MazeArrFullDet90x90EnvBrute(MazeEnv):
+    id = "maze-arr-90x90-full-deterministic-b0-v0"
+
+    def __init__(self):
+        super(MazeArrFullDet90x90EnvBrute, self).__init__(90, 90, "array", 1337, full_deterministic=True, brute=True)
+
+
 '''
 
 Reinforcement mazes.
@@ -497,11 +280,27 @@ Reinforcement mazes.
 '''
 
 
+class MazeArrFullDet4x4EnvRF(MazeEnv):
+    id = "maze-arr-4x4-full-deterministic-rf-v0"
+
+    def __init__(self):
+        super(MazeArrFullDet4x4EnvRF, self).__init__(4, 4, "array", 1337, full_deterministic=True, brute=False,
+                                                     reinforcement=True)
+
+
 class MazeArrFullDet6x6EnvRF(MazeEnv):
     id = "maze-arr-6x6-full-deterministic-rf-v0"
 
     def __init__(self):
-        super(MazeArrFullDet6x6EnvRF, self).__init__(6, 6, "normal", 1337, full_deterministic=True, brute=False,
+        super(MazeArrFullDet6x6EnvRF, self).__init__(6, 6, "array", 1337, full_deterministic=True, brute=False,
+                                                     reinforcement=True)
+
+
+class MazeArrFullDet9x9EnvRF(MazeEnv):
+    id = "maze-arr-9x9-full-deterministic-rf-v0"
+
+    def __init__(self):
+        super(MazeArrFullDet9x9EnvRF, self).__init__(9, 9, "array", 1337, full_deterministic=True, brute=False,
                                                      reinforcement=True)
 
 
@@ -509,7 +308,25 @@ class MazeArrFullDet19x19EnvRF(MazeEnv):
     id = "maze-arr-19x19-full-deterministic-rf-v0"
 
     def __init__(self):
-        super(MazeArrFullDet19x19EnvRF, self).__init__(19, 19, "normal", 1337, full_deterministic=True, brute=False,
+        super(MazeArrFullDet19x19EnvRF, self).__init__(19, 19, "array", 1337, full_deterministic=True, brute=False,
+                                                       reinforcement=True)
+
+
+class MazeArrFullDet25x25EnvRF(MazeEnv):
+    id = "maze-arr-25x25-full-deterministic-rf-v0"
+
+    def __init__(self):
+        super(MazeArrFullDet25x25EnvRF, self).__init__(25, 25, "array", 1337, full_deterministic=True,
+                                                       brute=False,
+                                                       reinforcement=True)
+
+
+class MazeArrFullDet35x35EnvRF(MazeEnv):
+    id = "maze-arr-35x35-full-deterministic-rf-v0"
+
+    def __init__(self):
+        super(MazeArrFullDet35x35EnvRF, self).__init__(35, 35, "array", 1337, full_deterministic=True,
+                                                       brute=False,
                                                        reinforcement=True)
 
 
@@ -517,5 +334,13 @@ class MazeArrFullDet55x55EnvRF(MazeEnv):
     id = "maze-arr-55x55-full-deterministic-rf-v0"
 
     def __init__(self):
-        super(MazeArrFullDet55x55EnvRF, self).__init__(55, 55, "normal", 1337, full_deterministic=True, brute=False,
+        super(MazeArrFullDet55x55EnvRF, self).__init__(55, 55, "array", 1337, full_deterministic=True, brute=False,
+                                                       reinforcement=True)
+
+
+class MazeArrFullDet90x90EnvRF(MazeEnv):
+    id = "maze-arr-90x90-full-deterministic-rf-v0"
+
+    def __init__(self):
+        super(MazeArrFullDet90x90EnvRF, self).__init__(90, 90, "array", 1337, full_deterministic=True, brute=False,
                                                        reinforcement=True)

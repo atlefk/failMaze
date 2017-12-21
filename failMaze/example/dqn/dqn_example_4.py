@@ -16,6 +16,7 @@ from IPython.display import SVG
 from keras.utils.vis_utils import model_to_dot
 
 from example.dqn.capsulelayers import PrimaryCap, CapsuleLayer, Length
+
 """
 class Trainer(Process):
 
@@ -90,7 +91,7 @@ class DQN:
         self.state_size = state_size
         self.action_size = action_size
         self.memory = deque(maxlen=memory_size)
-        self.gamma = discount    # discount rate
+        self.gamma = discount  # discount rate
         self.epsilon = e_max  # exploration rate
         self.epsilon_min = e_min
         self.epsilon_max = e_max
@@ -137,7 +138,7 @@ class DQN:
     def _huber_loss(self, target, prediction):
         # sqrt(1+error^2)-1
         error = prediction - target
-        return K.mean(K.sqrt(1+K.square(error))-1, axis=-1)
+        return K.mean(K.sqrt(1 + K.square(error)) - 1, axis=-1)
 
     def _build_model(self):
 
@@ -146,7 +147,8 @@ class DQN:
 
         conv1 = Conv2D(filters=256, kernel_size=1, strides=1, padding='valid', activation='relu', name='conv1')(x)
         primarycaps = PrimaryCap(conv1, dim_vector=8, n_channels=32, kernel_size=3, strides=2, padding='valid')
-        digitcaps = CapsuleLayer(num_capsule=self.action_size, dim_vector=16, num_routing=n_routing, name='digitcaps')(primarycaps)
+        digitcaps = CapsuleLayer(num_capsule=self.action_size, dim_vector=16, num_routing=n_routing, name='digitcaps')(
+            primarycaps)
         out_caps = Length(name='out_caps')(digitcaps)
 
         model = Model(inputs=[x], outputs=[out_caps])
@@ -165,8 +167,8 @@ class DQN:
         model.compile(optimizer=Adam(lr=self.learning_rate), loss=self._huber_loss)
         """
 
-        #plot_model(model, to_file='model.png', show_layer_names=True, show_shapes=True)
-        #SVG(model_to_dot(model).create(prog='dot', format='svg'))
+        # plot_model(model, to_file='model.png', show_layer_names=True, show_shapes=True)
+        # SVG(model_to_dot(model).create(prog='dot', format='svg'))
         return model
 
     def remember(self, state, action, reward, next_state, done):
@@ -186,17 +188,17 @@ class DQN:
         return np.argmax(act_values[0])  # returns action
 
     def testBit(self, int_type, offset):
-        #print(int_type)
+        # print(int_type)
         mask = 1 << offset
 
         return (int_type & mask)
 
     def replay(self, q_table=None):
-        inputs = np.zeros(((self.batch_size, ) + self.state_size))
+        inputs = np.zeros(((self.batch_size,) + self.state_size))
         targets = np.zeros((self.batch_size, self.action_size))
         for i, j in enumerate(np.random.choice(len(self.memory), self.batch_size, replace=False)):
             state, action, reward, next_state, terminal = self.memory[j]
-            #print(action)
+            # print(action)
             target = reward
 
             if not terminal:
@@ -209,25 +211,25 @@ class DQN:
             if q_table is not None:
 
                 ##Endre denne når bit kommer
-                #print(state)
-                #print(state)
+                # print(state)
+                # print(state)
 
                 for x in range(len(state[0])):
                     for y in range(len(state[0][x])):
                         value = int(state[0][x][y][0])
                         if self.testBit(value, 0) == 1:
                             player_pos = (y, x)
-                            #print("fant 1", i, j)
-                            #print(player_pos)
-                            #print(state)
-                            #print(player_pos)
+                            # print("fant 1", i, j)
+                            # print(player_pos)
+                            # print(state)
+                            # print(player_pos)
                 x, y = player_pos[0], player_pos[1]
-                #print(x, y)
-                #print(state)
+                # print(x, y)
+                # print(state)
                 try:
                     q_table[y, x] = np.argmax(targets[i]) + 1
-                    #print(q_table)
-                    #print(np.argmax(targets[i])+1)
+                    # print(q_table)
+                    # print(np.argmax(targets[i])+1)
                 except:
                     pass
                 '''
@@ -243,8 +245,8 @@ class DQN:
                     except:
                         pass
                 '''
-
-
+        print(inputs)
+        print(targets)
         history = self.model.fit(inputs, targets, epochs=self.train_epochs, verbose=0)
 
         self.cumulative_loss += history.history["loss"][0]
@@ -266,7 +268,7 @@ class DQN:
             print("asdasd")
             for i, j in enumerate(np.random.choice(len(self.memory), self.batch_size, replace=False)):
                 state, action, reward, next_state, terminal = self.memory[j]
-                #print("fuckdis")
+                # print("fuckdis")
                 target = reward
 
                 if not terminal:
@@ -276,7 +278,7 @@ class DQN:
                 print(i)
                 print(action)
                 targets[i, action] = target
-                #print(targets)
+                # print(targets)
                 inputs[i] = state
 
             yield inputs, targets

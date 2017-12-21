@@ -102,7 +102,6 @@ class DQN:
         #print(self.state_size)
         #print(self.action_size)
         model = Sequential()
-        print(self.state_size)
         model.add(Conv2D(32, (1, 1), strides=(1, 1), activation="relu", input_shape=self.state_size))
         model.add(Conv2D(64, (1, 1), strides=(1, 1), activation="relu"))
         model.add(Conv2D(128, (1, 1), strides=(1, 1), activation="relu"))

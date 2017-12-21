@@ -1,7 +1,7 @@
 import logging
 import time
 
-logger = logging.getLogger('cair_maze')
+logger = logging.getLogger('the-cannot-solver')
 logger.setLevel(logging.DEBUG)
 
 

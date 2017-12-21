@@ -3,7 +3,7 @@ import gym_maze
 import numpy as np
 import json
 from example.logger import logger
-from example.dqn.dqn_example_5 import DQN
+from example.dqn.dqn_example_4 import DQN
 
 class MazeClass(object):
     def __init__(self, render=False):
@@ -21,7 +21,6 @@ class MazeClass(object):
 
         self.agent = None
 
-
     def preprocess(self, state, agent):
         
         new_state = np.zeros(shape=(1,) + agent.state_size)
@@ -34,7 +33,6 @@ class MazeClass(object):
             for env_name in env_list:
                 print("Creating env %s" % env_name)
                 self.env = gym.make(env_name)
-                print(self.env.observation_space)
                 self.agent = DQN(
                     self.env.observation_space,
                     self.env.action_space,
@@ -43,9 +41,9 @@ class MazeClass(object):
                     train_epochs=self.train_epochs,
                     e_min=0,
                     e_max=1.0,
-                    e_steps=100000,
+                    e_steps=10000,
                     lr=0.00001,
-                    discount=0.95
+                    discount=0.99
                 )
                 self.agent.model.summary()
                 try:
@@ -67,9 +65,7 @@ class MazeClass(object):
 
                     # Reset environment
                     state = self.env.reset()
-
                     state = self.preprocess(state, self.agent)
-                    #print(state)
                     terminal = False
                     timestep = 0
 
@@ -134,4 +130,4 @@ class MazeClass(object):
 
                     if perfect_in_row >= perfects_before_next:
                         epoch = self.epochs
-                        perfectRows = True
+                        #perfectRows = True
