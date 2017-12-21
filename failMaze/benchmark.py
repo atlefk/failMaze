@@ -5,7 +5,7 @@ from mazeClass import MazeClass
 if __name__ == "__main__":
     #brute = bfClass(render=True)
     #reinforcement = ReinforcementClass(render=True)
-    project = MazeClass(render=True)
+    project = MazeClass()
 
     env_listBrute = [
         "maze-arr-4x4-full-deterministic-b0-v0",
